@@ -1,3 +1,4 @@
+import QueryBuilder from "../../builders/QueryBuilder";
 import { WorkerModel } from "./worker.model";
 
 const getAllWorkerFromDB = async () => {
@@ -12,14 +13,12 @@ const getSingleWorkerFromDB = async (id: string) => {
 };
 
 const getFilteredWorkerFromDB = async (query: Record<string, any>) => {
-  let searchTerm = "";
-  if (query?.searchTerm) {
-    searchTerm = query?.searchTerm;
-  }
-
-  const result = await WorkerModel.find({
-    "name.firstName": { $regex: searchTerm, $options: "i" },
-  });
+  const workerQuery = new QueryBuilder(WorkerModel.find(), query)
+    .search(["name.firstName"])
+    .filter()
+    .paginate()
+    .sort();
+  const result = workerQuery.modelQuery;
 
   return result;
 };
