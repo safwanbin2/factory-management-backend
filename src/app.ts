@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import { routeNotFound } from "./app/middlewares/routeNotFound";
+import { UserRouter } from "./app/modules/user/user.route";
+import { WorkerRouter } from "./app/modules/worker/worker.route";
 
 const app = express();
 app.use(express.json());
@@ -9,21 +11,8 @@ app.use(cors());
 
 // routes
 
-app.get("/api/v1", (req, res) => {
-  try {
-    res.status(200).json({
-      success: true,
-      message: "Sever is running fine",
-      data: null,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: "Error Occured",
-      errorSource: null,
-    });
-  }
-});
+app.use("/api/v1/users", UserRouter);
+app.use("/api/v1/workers", WorkerRouter);
 
 app.use(globalErrorHandler);
 app.use(routeNotFound);
